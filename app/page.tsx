@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, CheckCircle2, Code2, Search, Zap } from "lucide-react";
+import PaginatedJobs from "@/components/PaginatedJobs";
 
 export default function Home() {
   return (
@@ -117,40 +118,9 @@ export default function Home() {
               View all jobs <ArrowRight className="ml-1 h-4 w-4" />
             </Link>
           </div>
-          
-          <div className="space-y-4">
-            {[
-              { title: "Frontend Engineering Intern", company: "TechNova", type: "Internship", location: "Remote", salary: "$40-50/hr" },
-              { title: "Junior Full Stack Developer", company: "DataFlow", type: "Full-time", location: "New York, NY", salary: "$90k-110k" },
-              { title: "React Developer (Student Program)", company: "Innovate AI", type: "Part-time", location: "San Francisco, CA", salary: "$35/hr" },
-            ].map((job, i) => (
-              <div key={i} className="group border rounded-xl p-6 bg-background hover:border-primary/50 hover:shadow-md transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div className="flex items-center gap-4">
-                  <div className="h-12 w-12 rounded bg-muted flex items-center justify-center text-xl font-bold text-muted-foreground">
-                    {job.company.charAt(0)}
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-lg group-hover:text-primary transition-colors">{job.title}</h3>
-                    <div className="flex items-center text-sm text-muted-foreground gap-3 mt-1">
-                      <span>{job.company}</span>
-                      <span className="hidden sm:inline">•</span>
-                      <span>{job.location}</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold">
-                    {job.type}
-                  </span>
-                  <span className="text-sm font-medium">{job.salary}</span>
-                  <button className="hidden sm:inline-flex rounded-md bg-primary/10 text-primary px-4 py-2 text-sm font-medium hover:bg-primary/20 transition-colors">
-                    Apply
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-          
+
+          <PaginatedJobs />
+
           <div className="mt-8 text-center sm:hidden">
             <Link href="/jobs" className="inline-flex items-center text-primary hover:text-primary-hover font-medium transition-colors">
               View all jobs <ArrowRight className="ml-1 h-4 w-4" />
