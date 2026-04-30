@@ -1,29 +1,39 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, CheckCircle2, Code2, Search, Zap } from "lucide-react";
-import JobCard from "@/components/JobCard";
-import { jobs } from "@/data/jobs";
+import { Suspense } from "react";
+import LatestJobs from "@/components/LatestJobs";
+import LatestJobsSkeleton from "@/components/LatestJobsSkeleton";
+import HeroCursorShine from "@/components/HeroCursorShine";
 
 export default function Home() {
+
   return (
     <div className="flex flex-col min-h-screen">
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-background pt-16 md:pt-24 pb-32">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/20 via-background to-background -z-10" />
-        <div className="container mx-auto px-4">
+      <section id="hero-section" className="relative overflow-hidden bg-background pt-16 md:pt-24 pb-32">
+        <HeroCursorShine />
+        
+        {/* Animated Background Blobs */}
+        <div className="absolute top-0 -left-4 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob -z-10"></div>
+        <div className="absolute top-0 right-1/4 w-96 h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000 -z-10"></div>
+        <div className="absolute -bottom-8 left-1/3 w-96 h-96 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000 -z-10"></div>
+        
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/10 via-background to-background -z-20" />
+        <div className="container mx-auto px-4 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="max-w-2xl">
-              <div className="inline-flex items-center rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-sm text-primary mb-6">
+              <div className="inline-flex items-center rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-sm text-primary mb-6 animate-fade-in-up">
                 <span className="flex h-2 w-2 rounded-full bg-primary mr-2"></span>
                 The #1 Job Board for Software Students
               </div>
-              <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight mb-6 text-foreground">
+              <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight mb-6 text-foreground animate-fade-in-up animation-delay-100">
                 Launch Your <span className="text-primary">Software Career</span> Today
               </h1>
-              <p className="text-lg md:text-xl text-muted-foreground mb-8">
+              <p className="text-lg md:text-xl text-muted-foreground mb-8 animate-fade-in-up animation-delay-200">
                 Find the best internships, entry-level roles, and junior developer positions at top tech companies and fast-growing startups.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex flex-col sm:flex-row gap-4 animate-fade-in-up animation-delay-300">
                 <Link
                   href="/jobs"
                   className="inline-flex items-center justify-center rounded-md bg-primary px-8 py-3 text-sm font-medium text-primary-foreground shadow hover:bg-primary-hover transition-colors h-12"
@@ -38,7 +48,7 @@ export default function Home() {
                   Post a Job
                 </Link>
               </div>
-              <div className="mt-8 flex items-center gap-4 text-sm text-muted-foreground">
+              <div className="mt-8 flex items-center gap-4 text-sm text-muted-foreground animate-fade-in-up animation-delay-400">
                 <div className="flex -space-x-2">
                   {[1, 2, 3, 4].map((i) => (
                     <div key={i} className="inline-block h-8 w-8 rounded-full ring-2 ring-background bg-muted overflow-hidden">
@@ -49,15 +59,15 @@ export default function Home() {
                 <p>Join 10,000+ students hired</p>
               </div>
             </div>
-            <div className="relative lg:ml-auto">
+            <div className="relative lg:ml-auto animate-fade-in-up animation-delay-400">
               <div className="absolute -inset-0.5 bg-gradient-to-tr from-primary to-purple-300 rounded-2xl blur opacity-30 animate-pulse"></div>
-              <div className="relative rounded-2xl bg-background border shadow-2xl p-2">
+              <div className="relative rounded-2xl bg-background">
                 <Image
-                  src="/hero_graphic.png"
+                  src="/hero_graphic_new.png"
                   alt="3D abstract illustration of a web interface showing a job board concept"
-                  width={600}
-                  height={500}
-                  className="rounded-xl object-cover h-[400px] w-full md:h-[500px]"
+                  width={700}
+                  height={467}
+                  className="rounded-xl object-cover h-[420px] w-full md:h-[500px]"
                   priority
                 />
               </div>
@@ -120,11 +130,9 @@ export default function Home() {
             </Link>
           </div>
 
-          <div className="space-y-4">
-            {jobs.slice(0, 4).map((job) => (
-              <JobCard key={job.id} job={job} />
-            ))}
-          </div>
+          <Suspense fallback={<LatestJobsSkeleton />}>
+            <LatestJobs />
+          </Suspense>
 
           <div className="mt-8 text-center sm:hidden">
             <Link href="/jobs" className="inline-flex items-center text-primary hover:text-primary-hover font-medium transition-colors">

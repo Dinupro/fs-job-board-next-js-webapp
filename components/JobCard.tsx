@@ -7,7 +7,7 @@ interface JobCardProps {
 
 export default function JobCard({ job }: JobCardProps) {
   return (
-    <Link href={`/jobs/${job.id}?title=${encodeURIComponent(job.title)}`} className="block">
+    <Link href={`/jobs/${job.id}`} className="block">
       <div className="group border rounded-xl p-6 bg-background hover:border-primary/50 hover:shadow-md transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
           <div className="h-12 w-12 rounded bg-muted flex items-center justify-center text-xl font-bold text-muted-foreground shrink-0">

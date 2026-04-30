@@ -1,17 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import { jobs } from "@/data/jobs";
+import { Job } from "@/data/jobs";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import JobCard from "@/components/JobCard";
 
-export default function PaginatedJobs() {
+export default function PaginatedJobs({ initialJobs }: { initialJobs: Job[] }) {
   const [currentPage, setCurrentPage] = useState(1);
   const jobsPerPage = 5;
-  const totalPages = Math.ceil(jobs.length / jobsPerPage);
+  const totalPages = Math.ceil(initialJobs.length / jobsPerPage);
 
   const startIndex = (currentPage - 1) * jobsPerPage;
-  const visibleJobs = jobs.slice(startIndex, startIndex + jobsPerPage);
+  const visibleJobs = initialJobs.slice(startIndex, startIndex + jobsPerPage);
 
   return (
     <div>
