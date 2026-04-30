@@ -1,7 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, CheckCircle2, Code2, Search, Zap } from "lucide-react";
-import PaginatedJobs from "@/components/PaginatedJobs";
+import JobCard from "@/components/JobCard";
+import { jobs } from "@/data/jobs";
 
 export default function Home() {
   return (
@@ -119,7 +120,11 @@ export default function Home() {
             </Link>
           </div>
 
-          <PaginatedJobs />
+          <div className="space-y-4">
+            {jobs.slice(0, 4).map((job) => (
+              <JobCard key={job.id} job={job} />
+            ))}
+          </div>
 
           <div className="mt-8 text-center sm:hidden">
             <Link href="/jobs" className="inline-flex items-center text-primary hover:text-primary-hover font-medium transition-colors">
