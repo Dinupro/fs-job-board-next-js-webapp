@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, MapPin, Briefcase, GraduationCap, Clock, DollarSign, ExternalLink } from "lucide-react";
 import { getJobById, getAllJobs } from "@/lib/jobs";
+import ApplyModal from "@/components/ApplyModal";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -53,9 +54,7 @@ export default async function JobDetailsPage(props: Props) {
             </div>
           </div>
           <div className="flex flex-col gap-3 shrink-0">
-            <button className="bg-primary text-primary-foreground px-8 py-3 rounded-md font-bold hover:bg-primary-hover transition-colors shadow-sm flex items-center justify-center">
-              Apply Now <ExternalLink className="ml-2 h-4 w-4" />
-            </button>
+            <ApplyModal jobId={job.id} jobTitle={job.title} />
             <button className="border px-8 py-3 rounded-md font-medium hover:bg-muted transition-colors">
               Save Job
             </button>

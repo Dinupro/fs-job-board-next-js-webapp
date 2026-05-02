@@ -10,23 +10,22 @@ model User {
   id           String        @id @default(uuid())
   email        String        @unique
   name         String?
-  passwordHash String?       // if using email/password auth
+  passwordHash String?
   applications Application[]
 }
 
 model Application {
-  id            String   @id @default(uuid())
-  userId        String
-  jobId         String
-  fullName      String
-  email         String
-  phone         String
-  linkedIn      String?
-  portfolio     String?
-  coverLetter   String
-  resumePath    String
-  extraDocPath  String?
-  createdAt     DateTime @default(now())
+  id                 String   @id @default(uuid())
+  userId             String?
+  jobId              String
+  fullName           String
+  email              String
+  phone              String
+  coverLetter        String
+  resumePath         String
+  linkedInUrl        String?  // Added
+  portfolioGithubUrl String?  // Added
+  createdAt          DateTime @default(now())
 
-  user User @relation(fields: [userId], references: [id])
+  user User? @relation(fields: [userId], references: [id])
 }
