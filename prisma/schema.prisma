@@ -1,0 +1,32 @@
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id           String        @id @default(uuid())
+  email        String        @unique
+  name         String?
+  passwordHash String?       // if using email/password auth
+  applications Application[]
+}
+
+model Application {
+  id            String   @id @default(uuid())
+  userId        String
+  jobId         String
+  fullName      String
+  email         String
+  phone         String
+  linkedIn      String?
+  portfolio     String?
+  coverLetter   String
+  resumePath    String
+  extraDocPath  String?
+  createdAt     DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+}
