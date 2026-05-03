@@ -16,9 +16,11 @@ const applicationSchema = z.object({
 });
 
 export async function POST(request: Request) {
+  console.log("POST /api/applications hit");
   try {
     const formData = await request.formData();
-    
+    console.log("FormData keys:", Array.from(formData.keys()));
+
     // Extract fields
     const jobId = formData.get("jobId") as string;
     const fullName = formData.get("fullName") as string;
@@ -28,6 +30,8 @@ export async function POST(request: Request) {
     const linkedInUrl = formData.get("linkedInUrl") as string;
     const portfolioGithubUrl = formData.get("portfolioGithubUrl") as string;
     const resumeFile = formData.get("resume") as File | null;
+
+    console.log("Extracted data:", { jobId, fullName, email, phone });
 
     // Validate fields with Zod
     const validatedData = applicationSchema.parse({
@@ -100,7 +104,7 @@ export async function POST(request: Request) {
     );
   } catch (error) {
     console.error("Application submission error:", error);
-    
+
     if (error instanceof z.ZodError) {
       return NextResponse.json(
         { message: "Validation error", errors: error.issues },
