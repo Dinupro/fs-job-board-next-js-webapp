@@ -1,5 +1,6 @@
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 generator client {
@@ -11,11 +12,76 @@ model User {
   email        String        @unique
   name         String?
   passwordHash String?
+  role         Role          @default(CANDIDATE)
+  applications Application[]
+  recruiter    Recruiter?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+enum Role {
+  CANDIDATE
+  RECRUITER
+  ADMIN
+}
+
+model Recruiter {
+  id           String   @id @default(uuid())
+  userId       String   @unique
+  companyName  String
+  companyLogo  String?
+  website      String?
+  description  String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user         User     @relation(fields: [userId], references: [id])
+  jobs         Job[]
+}
+
+model Category {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  slug      String   @unique
+  jobs      Job[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Job {
+  id           String    @id @default(uuid())
+  title        String
+  description  String
+  location     String
+  type         JobType
+  salaryMin    Int?
+  salaryMax    Int?
+  status       JobStatus @default(DRAFT)
+  recruiterId  String
+  categoryId   String
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  recruiter    Recruiter @relation(fields: [recruiterId], references: [id])
+  category     Category  @relation(fields: [categoryId], references: [id])
   applications Application[]
 }
 
+enum JobType {
+  FULL_TIME
+  PART_TIME
+  CONTRACT
+  FREELANCE
+}
+
+enum JobStatus {
+  PUBLISHED
+  DRAFT
+  CLOSED
+}
+
 model Application {
-  id                 String   @id @default(uuid())
+  id                 String            @id @default(uuid())
   userId             String?
   jobId              String
   fullName           String
@@ -23,9 +89,17 @@ model Application {
   phone              String
   coverLetter        String
   resumePath         String
-  linkedInUrl        String?  // Added
-  portfolioGithubUrl String?  // Added
-  createdAt          DateTime @default(now())
+  linkedInUrl        String?
+  portfolioGithubUrl String?
+  status             ApplicationStatus @default(PENDING)
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @updatedAt
 
-  user User? @relation(fields: [userId], references: [id])
+  user               User?             @relation(fields: [userId], references: [id])
+  job                Job               @relation(fields: [jobId], references: [id])
+}
+
+enum ApplicationStatus {
+  PENDING
+  REJECTED
 }
