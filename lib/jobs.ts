@@ -1,14 +1,19 @@
-import { jobs, Job } from "@/data/jobs";
+import prisma from "./prisma";
+import { Prisma } from "@prisma/client";
 
 export interface GetJobsParams {
   search?: string;
   location?: string;
   type?: string;
-  term?: string;
-  skill?: string;
+  category?: string; // Replaced term/skill with category
   page?: number;
   limit?: number;
 }
+
+// Extract the generated Job type with its relations included
+export type JobWithRelations = Prisma.JobGetPayload<{
+  include: { recruiter: true; category: true };
+}>;
 
 export interface PaginatedResponse<T> {
   data: T[];
@@ -20,62 +25,75 @@ export interface PaginatedResponse<T> {
 
 /**
  * Get all jobs without pagination or filtering.
- * Useful for static generation or sitemaps.
  */
-export async function getAllJobs(): Promise<Job[]> {
-  // Simulate network delay
-  await new Promise(resolve => setTimeout(resolve, 200));
-  return [...jobs];
+export async function getAllJobs(): Promise<JobWithRelations[]> {
+  return prisma.job.findMany({
+    include: {
+      recruiter: true,
+      category: true,
+    },
+    orderBy: {
+      createdAt: 'desc',
+    },
+  });
 }
 
 /**
  * Get jobs with optional filtering, searching, and pagination.
  */
-export async function getJobs(params: GetJobsParams = {}): Promise<PaginatedResponse<Job>> {
-  // Simulate network delay to make it realistic
-  await new Promise(resolve => setTimeout(resolve, 300));
-
-  let filteredJobs = [...jobs];
-
-  // Apply Search (title or company)
-  if (params.search) {
-    const query = params.search.toLowerCase();
-    filteredJobs = filteredJobs.filter(
-      job => 
-        job.title.toLowerCase().includes(query) || 
-        job.company.toLowerCase().includes(query)
-    );
-  }
-
-  // Apply Filters
-  if (params.location) {
-    filteredJobs = filteredJobs.filter(job => job.location === params.location);
-  }
-  
-  if (params.type) {
-    filteredJobs = filteredJobs.filter(job => job.type === params.type);
-  }
-
-  if (params.term) {
-    filteredJobs = filteredJobs.filter(job => job.term === params.term);
-  }
-
-  if (params.skill) {
-    filteredJobs = filteredJobs.filter(job => job.skills.includes(params.skill!));
-  }
-
-  // Pagination
+export async function getJobs(params: GetJobsParams = {}): Promise<PaginatedResponse<JobWithRelations>> {
   const page = params.page || 1;
   const limit = params.limit || 5;
-  const total = filteredJobs.length;
-  const totalPages = Math.ceil(total / limit);
-  const startIndex = (page - 1) * limit;
-  const endIndex = startIndex + limit;
+  const skip = (page - 1) * limit;
 
-  const paginatedData = filteredJobs.slice(startIndex, endIndex);
+  // Build the where clause
+  const where: Prisma.JobWhereInput = {
+    status: 'PUBLISHED',
+  };
+
+  if (params.search) {
+    where.OR = [
+      { title: { contains: params.search, mode: 'insensitive' } },
+      { recruiter: { companyName: { contains: params.search, mode: 'insensitive' } } },
+    ];
+  }
+
+  if (params.location) {
+    where.location = params.location;
+  }
+
+  if (params.type) {
+    // Assuming the param matches the enum string value
+    where.type = params.type as any;
+  }
+
+  if (params.category) {
+    // We expect the category slug to be passed
+    where.category = {
+      slug: params.category,
+    };
+  }
+
+  const [total, jobs] = await Promise.all([
+    prisma.job.count({ where }),
+    prisma.job.findMany({
+      where,
+      include: {
+        recruiter: true,
+        category: true,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+      skip,
+      take: limit,
+    }),
+  ]);
+
+  const totalPages = Math.ceil(total / limit);
 
   return {
-    data: paginatedData,
+    data: jobs,
     total,
     page,
     limit,
@@ -84,24 +102,46 @@ export async function getJobs(params: GetJobsParams = {}): Promise<PaginatedResp
 }
 
 /**
- * Get a single job by its ID/Slug
+ * Get a single job by its ID
  */
-export async function getJobById(id: string): Promise<Job | null> {
-  // Simulate network delay
-  await new Promise(resolve => setTimeout(resolve, 200));
-  
-  const job = jobs.find(j => j.id === id);
-  return job || null;
+export async function getJobById(id: string): Promise<JobWithRelations | null> {
+  return prisma.job.findUnique({
+    where: { id },
+    include: {
+      recruiter: true,
+      category: true,
+    },
+  });
 }
 
 /**
  * Extract unique options for filter dropdowns based on available data
  */
 export async function getFilterOptions() {
-  const locations = Array.from(new Set(jobs.map(j => j.location))).sort();
-  const types = Array.from(new Set(jobs.map(j => j.type))).sort();
-  const terms = Array.from(new Set(jobs.map(j => j.term))).sort();
-  const skills = Array.from(new Set(jobs.flatMap(j => j.skills))).sort();
+  // Get distinct locations
+  const locationsData = await prisma.job.findMany({
+    where: { status: 'PUBLISHED' },
+    distinct: ['location'],
+    select: { location: true },
+  });
+  const locations = locationsData.map(l => l.location).sort();
 
-  return { locations, types, terms, skills };
+  // Get distinct types
+  const typesData = await prisma.job.findMany({
+    where: { status: 'PUBLISHED' },
+    distinct: ['type'],
+    select: { type: true },
+  });
+  const types = typesData.map(t => t.type).sort();
+
+  // Get all categories
+  const categoriesData = await prisma.category.findMany({
+    orderBy: { name: 'asc' }
+  });
+  
+  return { 
+    locations, 
+    types, 
+    categories: categoriesData 
+  };
 }

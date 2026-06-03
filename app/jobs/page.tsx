@@ -14,8 +14,7 @@ export default async function JobsPage(props: Props) {
   const search = typeof searchParams.search === "string" ? searchParams.search : undefined;
   const location = typeof searchParams.location === "string" ? searchParams.location : undefined;
   const type = typeof searchParams.type === "string" ? searchParams.type : undefined;
-  const term = typeof searchParams.term === "string" ? searchParams.term : undefined;
-  const skill = typeof searchParams.skill === "string" ? searchParams.skill : undefined;
+  const category = typeof searchParams.category === "string" ? searchParams.category : undefined;
   const page = typeof searchParams.page === "string" ? parseInt(searchParams.page, 10) : 1;
 
   // Fetch filter options and jobs in parallel
@@ -25,14 +24,13 @@ export default async function JobsPage(props: Props) {
       search,
       location,
       type,
-      term,
-      skill,
+      category,
       page,
       limit: 5
     })
   ]);
 
-  const { locations, types, terms, skills } = filterOptions;
+  const { locations, types, categories } = filterOptions;
   const { data: visibleJobs, total, totalPages, page: currentPage } = jobsResponse;
 
   const createPageUrl = (newPage: number) => {
@@ -40,8 +38,7 @@ export default async function JobsPage(props: Props) {
     if (search) params.set("search", search);
     if (location) params.set("location", location);
     if (type) params.set("type", type);
-    if (term) params.set("term", term);
-    if (skill) params.set("skill", skill);
+    if (category) params.set("category", category);
     if (newPage > 1) params.set("page", newPage.toString());
     
     return `/jobs?${params.toString()}`;
@@ -61,12 +58,10 @@ export default async function JobsPage(props: Props) {
             initialSearch={search || ""}
             initialLocation={location || ""}
             initialType={type || ""}
-            initialTerm={term || ""}
-            initialSkill={skill || ""}
+            initialCategory={category || ""}
             locations={locations}
             types={types}
-            terms={terms}
-            skills={skills}
+            categories={categories}
           />
         </div>
 

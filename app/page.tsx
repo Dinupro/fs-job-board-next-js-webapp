@@ -19,7 +19,7 @@ export default function Home() {
         <div className="absolute top-0 right-1/4 w-96 h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000 -z-10"></div>
         <div className="absolute -bottom-8 left-1/3 w-96 h-96 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000 -z-10"></div>
         
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/10 via-background to-background -z-20" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,var(--tw-gradient-stops))] from-primary/10 via-background to-background -z-20" />
         <div className="container mx-auto px-4 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="max-w-2xl">
@@ -60,7 +60,7 @@ export default function Home() {
               </div>
             </div>
             <div className="relative lg:ml-auto animate-fade-in-up animation-delay-400">
-              <div className="absolute -inset-0.5 bg-gradient-to-tr from-primary to-purple-300 rounded-2xl blur opacity-30 animate-pulse"></div>
+              <div className="absolute -inset-0.5 bg-linear-to-tr from-primary to-purple-300 rounded-2xl blur opacity-30 animate-pulse"></div>
               <div className="relative rounded-2xl bg-background">
                 <Image
                   src="/hero_graphic_new.png"

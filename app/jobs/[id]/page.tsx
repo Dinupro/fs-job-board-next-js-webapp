@@ -16,6 +16,15 @@ export default async function JobDetailsPage(props: Props) {
     notFound();
   }
 
+  const formatSalary = (min: number | null, max: number | null) => {
+    if (!min && !max) return "Competitive";
+    if (min && !max) return `$${(min / 1000).toFixed(0)}k+`;
+    if (!min && max) return `Up to $${(max / 1000).toFixed(0)}k`;
+    return `$${(min! / 1000).toFixed(0)}k - $${(max! / 1000).toFixed(0)}k`;
+  };
+
+  const typeDisplay = job.type.replace('_', ' ').replace(/\w\S*/g, (w) => (w.replace(/^\w/, (c) => c.toUpperCase())));
+
   return (
     <div className="container mx-auto px-4 py-12 max-w-4xl">
       <div className="mb-8">
@@ -27,28 +36,34 @@ export default async function JobDetailsPage(props: Props) {
       <div className="bg-background border rounded-2xl p-8 shadow-sm mb-8">
         <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
           <div className="flex items-start gap-6">
-            <div className="h-16 w-16 rounded-xl bg-muted flex items-center justify-center text-3xl font-bold text-muted-foreground shrink-0">
-              {job.company.charAt(0)}
+            <div className="h-16 w-16 rounded-xl bg-muted flex items-center justify-center text-3xl font-bold text-muted-foreground shrink-0 overflow-hidden">
+              {job.recruiter.companyLogo ? (
+                <img src={job.recruiter.companyLogo} alt={job.recruiter.companyName} className="w-full h-full object-cover" />
+              ) : (
+                job.recruiter.companyName.charAt(0).toUpperCase()
+              )}
             </div>
             <div>
               <h1 className="text-3xl font-bold tracking-tight mb-2">{job.title}</h1>
-              <div className="text-xl text-muted-foreground mb-4">{job.company}</div>
+              <div className="text-xl text-muted-foreground mb-4">{job.recruiter.companyName}</div>
               
               <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
                 <div className="flex items-center">
                   <MapPin className="mr-1.5 h-4 w-4" /> {job.location}
                 </div>
                 <div className="flex items-center">
-                  <Briefcase className="mr-1.5 h-4 w-4" /> {job.type}
+                  <Briefcase className="mr-1.5 h-4 w-4" /> {typeDisplay}
                 </div>
                 <div className="flex items-center">
-                  <DollarSign className="mr-1.5 h-4 w-4" /> {job.salary}
+                  <DollarSign className="mr-1.5 h-4 w-4" /> {formatSalary(job.salaryMin, job.salaryMax)}
                 </div>
+                {job.category && (
+                  <div className="flex items-center">
+                    <GraduationCap className="mr-1.5 h-4 w-4" /> {job.category.name}
+                  </div>
+                )}
                 <div className="flex items-center">
-                  <GraduationCap className="mr-1.5 h-4 w-4" /> {job.term}
-                </div>
-                <div className="flex items-center">
-                  <Clock className="mr-1.5 h-4 w-4" /> Posted {new Date(job.postedAt).toLocaleDateString()}
+                  <Clock className="mr-1.5 h-4 w-4" /> Posted {new Date(job.createdAt).toLocaleDateString()}
                 </div>
               </div>
             </div>
@@ -58,17 +73,6 @@ export default async function JobDetailsPage(props: Props) {
             <button className="border px-8 py-3 rounded-md font-medium hover:bg-muted transition-colors">
               Save Job
             </button>
-          </div>
-        </div>
-
-        <div className="mt-8 pt-8 border-t">
-          <h2 className="text-xl font-bold mb-4">Required Skills</h2>
-          <div className="flex flex-wrap gap-2">
-            {job.skills.map((skill) => (
-              <span key={skill} className="bg-primary/10 text-primary px-3 py-1.5 rounded-full text-sm font-medium">
-                {skill}
-              </span>
-            ))}
           </div>
         </div>
       </div>

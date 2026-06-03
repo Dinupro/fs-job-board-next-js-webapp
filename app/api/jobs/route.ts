@@ -8,8 +8,7 @@ export async function GET(request: Request) {
     search: searchParams.get("search") || undefined,
     location: searchParams.get("location") || undefined,
     type: searchParams.get("type") || undefined,
-    term: searchParams.get("term") || undefined,
-    skill: searchParams.get("skill") || undefined,
+    category: searchParams.get("category") || undefined,
     page: searchParams.get("page") ? parseInt(searchParams.get("page")!) : 1,
     limit: searchParams.get("limit") ? parseInt(searchParams.get("limit")!) : 5,
   };

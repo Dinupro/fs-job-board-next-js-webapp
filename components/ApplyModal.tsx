@@ -40,8 +40,8 @@ export default function ApplyModal({ jobId, jobTitle }: ApplyModalProps) {
         form.reset();
       } else {
         // Error: Show the error returned by the server
-        setStatus({ 
-          type: "error", 
+        setStatus({
+          type: "error",
           message: json.message || "Something went wrong. Please try again.",
           errors: json.errors
         });
@@ -66,7 +66,7 @@ export default function ApplyModal({ jobId, jobTitle }: ApplyModalProps) {
         onClick={() => setOpen(true)}
         className="group relative inline-flex items-center justify-center overflow-hidden rounded-xl bg-primary px-8 py-4 text-lg font-bold text-white shadow-lg transition-all duration-300 hover:scale-[1.02] hover:shadow-primary/25 active:scale-[0.98]"
       >
-        <div className="absolute inset-0 bg-gradient-to-r from-primary-hover to-primary opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+        <div className="absolute inset-0 bg-linear-to-r from-primary-hover to-primary opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
         <span className="relative flex items-center gap-2">
           Apply Now <Briefcase className="h-5 w-5" />
         </span>
@@ -75,7 +75,7 @@ export default function ApplyModal({ jobId, jobTitle }: ApplyModalProps) {
   }
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-[999] p-4 sm:p-6 transition-all duration-300">
+    <div className="fixed inset-0 flex items-center justify-center  p-4 sm:p-6 transition-all duration-300">
       <div className="absolute inset-0 bg-black/60 backdrop-blur-md" onClick={handleClose} />
 
       <div className="relative bg-background border border-border shadow-2xl rounded-3xl w-full max-w-2xl overflow-hidden animate-fade-in-up">
@@ -182,7 +182,7 @@ export default function ApplyModal({ jobId, jobTitle }: ApplyModalProps) {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="flex-[2] bg-primary text-white px-6 py-4 rounded-2xl font-black text-lg transition-all shadow-xl hover:shadow-primary/40 active:scale-95 disabled:opacity-70 flex items-center justify-center gap-3"
+                  className="flex-2 bg-primary text-white px-6 py-4 rounded-2xl font-black text-lg transition-all shadow-xl hover:shadow-primary/40 active:scale-95 disabled:opacity-70 flex items-center justify-center gap-3"
                 >
                   {loading ? (
                     <>
