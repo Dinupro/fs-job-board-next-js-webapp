@@ -4,6 +4,14 @@ import { jobs as mockJobs } from '../data/jobs';
 const prisma = new PrismaClient();
 
 async function main() {
+  console.log('Cleaning database...');
+  // Clear existing data in dependency order to prevent foreign key errors
+  await prisma.application.deleteMany();
+  await prisma.job.deleteMany();
+  await prisma.recruiter.deleteMany();
+  await prisma.category.deleteMany();
+  await prisma.user.deleteMany();
+
   console.log('Seeding database...');
 
   // Create default admin / candidate
@@ -78,6 +86,7 @@ async function main() {
 
     await prisma.job.create({
       data: {
+        id: mockJob.id,
         title: mockJob.title,
         description: mockJob.description,
         location: mockJob.location,
